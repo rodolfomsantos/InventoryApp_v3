@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2016 The Android Open Source Project
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <!-- Name for the application [CHAR LIMIT=12] -->
+    <string name="app_name">Inventory</string>
+
+    <!-- Label for overflow menu option that inserts fake pet data into the app [CHAR LIMIT=20] -->
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+
+    <!-- Label for overflow menu option that deletes all pet data in the app [CHAR LIMIT=20] -->
+    <string name="action_delete_all_entries">Delete All Products</string>
+
+    <!-- Title for the activity to add a new product [CHAR LIMIT=20] -->
+    <string name="editor_activity_title_new_product">Edit a Product</string>
+
+    <!-- Label for editor menu option to save product and leave editor [CHAR LIMIT=20] -->
+    <string name="action_save">Save</string>
+
+    <!-- Label for editor overflow menu option that deletes the current product [CHAR LIMIT=20] -->
+    <string name="action_delete">Delete</string>
+
+    <!-- Label for overview category of attributes in the editor [CHAR LIMIT=30] -->
+    <string name="category_overview">Overview</string>
+
+    <!-- Label for units sold information in the editor [CHAR LIMIT=30] -->
+    <string name="units_sold">Units Sold</string>
+
+    <!-- Text hint for units sold field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_units_sold">Units</string>
+
+    <!-- Units for Units Sold(#) [CHAR LIMIT=5] -->
+    <string name="unit_units_sold">Uni.</string>
+
+    <!-- Label for total sales information in the editor [CHAR LIMIT=30] -->
+    <string name="total_sales">Total of Sales:</string>
+
+    <!-- Label for total sales value information in the editor [CHAR LIMIT=30] -->
+    <string name="total_sales_value">Sales</string>
+
+    <!-- Units for Sales Value (€) [CHAR LIMIT=5] -->
+    <string name="unit_sales_value">€</string>
+
+    <!-- Text for product name field in the editor [CHAR LIMIT=30] -->
+    <string name="product_name">Product Name:</string>
+
+    <!-- Text hint for product name field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_product_name">Product Name</string>
+
+    <!-- Text hint for product quantity field in the editor [CHAR LIMIT=30] -->
+    <string name="product_quantity">Quantity:</string>
+
+    <!-- Text hint for product quantity field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_product_quantity">Product Quantity</string>
+
+    <!-- Text for product price field in the editor [CHAR LIMIT=30] -->
+    <string name="product_price">Product Price:</string>
+
+    <!-- Text hint for product price field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_product_price">Product Price</string>
+
+    <!-- Supplier Email-->
+    <string name="supplier_email">Supplier Email:</string>
+
+    <!-- Hint for Supplier Email-->
+    <string name="hint_supplier_email">Email</string>
+
+    <!-- Sell Button-->
+    <string name="sell_button">Sell Product</string>
+
+    <!-- Buy Button-->
+    <string name="buy_button">Buy Product</string>
+
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by adding a product</string>
+
+    <!-- Toast message in editor when there are no Products to Delete because tha table is empty [CHAR LIMIT=NONE] -->
+    <string name="editor_no_products_to_delete">There are no Products to delete!</string>
+
+    <!-- Dialog message to ask the user to confirm deleting the current product [CHAR LIMIT=NONE] -->
+    <string name="delete_all_products_dialog_msg">Delete all Products?</string>
+
+    <!-- Dialog button text for the option to cancel deletion of the current product [CHAR LIMIT=20] -->
+    <string name="cancel">Cancel</string>
+
+
+</resources>
