@@ -18,7 +18,7 @@
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
 
     <!-- Label for overflow menu option that deletes all pet data in the app [CHAR LIMIT=20] -->
-    <string name="action_delete_all_entries">Delete All Products</string>
+    <string name="action_delete_all_entries">Delete All</string>
 
     <!-- Title for the activity to add a new product [CHAR LIMIT=20] -->
     <string name="editor_activity_title_new_product">Edit a Product</string>
@@ -89,11 +89,17 @@
     <!-- Toast message in editor when there are no Products to Delete because tha table is empty [CHAR LIMIT=NONE] -->
     <string name="editor_no_products_to_delete">There are no Products to delete!</string>
 
+    <!-- Toast message in editor when all Products are Deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_all_products_deleted">All Products deleted!</string>
+
     <!-- Dialog message to ask the user to confirm deleting the current product [CHAR LIMIT=NONE] -->
     <string name="delete_all_products_dialog_msg">Delete all Products?</string>
 
     <!-- Dialog button text for the option to cancel deletion of the current product [CHAR LIMIT=20] -->
     <string name="cancel">Cancel</string>
+
+    <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
+    <string name="delete">Delete</string>
 
 
 </resources>

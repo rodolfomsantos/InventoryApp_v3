@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.android.products.data.ProductContract.ProductEntry;
+import com.example.android.products.data.ProductDbHelper;
 
 /**
  * Displays a list of products that were entered and stored in the app.
@@ -46,7 +47,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     //private PetDbHelper mDbHelper;
     private static final int PRODUCT_LOADER = 0;
 
-    ProductCursorAdpater mCursorAdapter;
+    ProductCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,33 +65,33 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         });
 
         // Find the ListView which will be populated with the product data
-        ListView petListView = (ListView) findViewById(R.id.list);
+        ListView productsListView = (ListView) findViewById(R.id.list);
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
-        petListView.setEmptyView(emptyView);
+        productsListView.setEmptyView(emptyView);
 
-        // Setup an Adapter to create a list item for each row of pets data in the Cursor.
-        // There is no pet data yet (until the loader finishes) so pass in null for the Cursor.
-        mCursorAdapter = new ProductCursorAdpater(this, null);
-        petListView.setAdapter(mCursorAdapter);
+        // Setup an Adapter to create a list item for each row of products data in the Cursor.
+        // There is no product data yet (until the loader finishes) so pass in null for the Cursor.
+        mCursorAdapter = new ProductCursorAdapter(this, null);
+        productsListView.setAdapter(mCursorAdapter);
 
         // Setup item click listener
-        petListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        productsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Create a new intent to go to {@link EditorActivity}
                 Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
 
-                // Form the content URI that represents the specific pet that was clicked on
+                // Form the content URI that represents the specific product that was clicked on
                 // by appending the "id" (passed as an input to this method) onto the
-                // {@link PetEntry#CONTENT_URI}.
-                // For example, teh URI would be "content://com.example.android.pets/pets/2"
-                // if the pet with ID 2 was clicked on.
-                Uri currentPetUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
+                // {@link ProductEntry#CONTENT_URI}.
+                // For example, the URI would be "content://com.example.android.products/products/2"
+                // if the product with ID 2 was clicked on.
+                Uri currentProductUri = ContentUris.withAppendedId(ProductEntry.CONTENT_URI, id);
 
                 // Set the URI on the data field of the intent
-                intent.setData(currentPetUri);
+                intent.setData(currentProductUri);
 
                 // Launch the {@link EditorActivity} to display teh data for the current pet.
                 startActivity(intent);
@@ -159,7 +160,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // Define a projection that specifies the column from the table we care about.
         String[] projection = {
                 ProductEntry._ID,
-                ProductEntry.COLUMN_PRODUCT_IMAGE,
+                ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_QUANTITY,
                 ProductEntry.COLUMN_PRODUCT_PRICE};
 
@@ -188,61 +189,57 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     }
 
     /**
-     * This method recycles the Loader, and refreshes the UI
+     * Helper method to delete all products in the database.
      */
-    @Override
-    public void onResume() {
-        super.onResume();
-        //
-        getLoaderManager().restartLoader(PRODUCT_LOADER, null, this);
-    }
+    private void deleteAllProducts() {
+        int rowsDeleted = getContentResolver().delete(ProductEntry.CONTENT_URI, null, null);
+        Log.v("CatalogActivity", rowsDeleted + " rows deleted from products database");
 
-    /**
-     * Shows a Dialog Box to confirm deleting a Pet
-     */
-    private void showDeleteConfirmationDialog() {
-
-        // Only perform the delete if this is an existing product.
         if (ProductEntry.CONTENT_URI != null) {
-
-            // Call the ContentResolver to delete the pet at the given content URI.
-            // Pass in null for the selection and selection args because the mCurrentProducttUri
-            // content URI already identifies the prodyct that we want.
-            int rowsDeleted = getContentResolver().delete(ProductEntry.CONTENT_URI, null, null);
-            Log.v("CatalogActivity", rowsDeleted + " rows deleted from products database");
 
             // Show a toast message depending on whether or not the delete was successful.
             if (rowsDeleted == 0) {
                 // If no rows were deleted, then there was an error with the delete.
                 Toast.makeText(this, getString(R.string.editor_no_products_to_delete),
                         Toast.LENGTH_SHORT).show();
-
             } else {
-
-                // Create an AlertDialog.Builder and set the message, and click listeners
-                // for the positive and negative buttons on the dialog.
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(R.string.delete_all_products_dialog_msg);
-                builder.setPositiveButton(R.string.action_delete_all_entries, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked the "Delete all Products" button, so delete all products.
-                        onResume();
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked the "Cancel" button, so dismiss the dialog
-                        if (dialog != null) {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                // Create and show the AlertDialog
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_all_products_deleted),
+                        Toast.LENGTH_SHORT).show();
             }
         }
+
     }
 
+    /**
+     * Shows a Dialog Box to confirm deleting all Pet
+     */
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_all_products_dialog_msg);
+        builder.setPositiveButton(R.string.action_delete_all_entries,
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the pet.
+                deleteAllProducts();
+                // Refresh the UI
+                getContentResolver().notifyChange(ProductEntry.CONTENT_URI, null);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }

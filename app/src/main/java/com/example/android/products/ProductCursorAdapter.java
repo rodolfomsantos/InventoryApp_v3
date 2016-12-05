@@ -2,7 +2,6 @@ package com.example.android.products;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +11,20 @@ import android.widget.TextView;
 import com.example.android.products.data.ProductContract.ProductEntry;
 
 /**
- * {@link ProductCursorAdpater} is an adapter for a list or grid view
+ * {@link ProductCursorAdapter} is an adapter for a list or grid view
  * that uses a {@link Cursor} of pet data as its data source. This adapter knows
  * how to create list items for each row of pet data in the {@link Cursor}.
  */
 
-public class ProductCursorAdpater extends CursorAdapter{
+public class ProductCursorAdapter extends CursorAdapter{
 
     /**
-     * Constructs a new {@link ProductCursorAdpater}.
+     * Constructs a new {@link ProductCursorAdapter}.
      *
      * @param context The context
      * @param c       The cursor from which to get the data.
      */
-    public ProductCursorAdpater(Context context, Cursor c) {
+    public ProductCursorAdapter(Context context, Cursor c) {
         super(context, c, 0 /* flags */);
     }
 
@@ -45,8 +44,8 @@ public class ProductCursorAdpater extends CursorAdapter{
 
     /**
      * This method binds the product data (in the current row pointed to by cursor) to the given
-     * list item layout. For example, the name for the current product can be set on the name TextView
-     * in the list item layout.
+     * list item layout. For example, the name for the current product can be set on the name
+     * TextView in the list item layout.
      *
      * @param view    Existing view, returned earlier by newView() method
      * @param context app context
