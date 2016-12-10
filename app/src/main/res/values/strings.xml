@@ -21,7 +21,10 @@
     <string name="action_delete_all_entries">Delete All</string>
 
     <!-- Title for the activity to add a new product [CHAR LIMIT=20] -->
-    <string name="editor_activity_title_new_product">Edit a Product</string>
+    <string name="editor_activity_title_new_product">Add a Product</string>
+
+    <!-- Title for the activity to add a new product [CHAR LIMIT=20] -->
+    <string name="editor_activity_title_edit_product">Edit Product</string>
 
     <!-- Label for editor menu option to save product and leave editor [CHAR LIMIT=20] -->
     <string name="action_save">Save</string>
@@ -86,10 +89,10 @@
     <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
     <string name="empty_view_subtitle_text">Get started by adding a product</string>
 
-    <!-- Toast message in editor when there are no Products to Delete because tha table is empty [CHAR LIMIT=NONE] -->
+    <!-- Toast message in the Catalog Activity editor when there are no Products to Delete because tha table is empty [CHAR LIMIT=NONE] -->
     <string name="editor_no_products_to_delete">There are no Products to delete!</string>
 
-    <!-- Toast message in editor when all Products are Deleted [CHAR LIMIT=NONE] -->
+    <!-- Toast message in the Catalog Activity editor when all Products are Deleted [CHAR LIMIT=NONE] -->
     <string name="editor_all_products_deleted">All Products deleted!</string>
 
     <!-- Dialog message to ask the user to confirm deleting the current product [CHAR LIMIT=NONE] -->
@@ -100,6 +103,36 @@
 
     <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
     <string name="delete">Delete</string>
+
+    <!-- Toast message in Editor Activity editor when new product has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_product_failed">Error with saving product</string>
+
+    <!-- Toast message in Editor Activity editor when new product has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_product_successful">Pet saved</string>
+
+    <!-- Toast message in Editor Activity editor when new pet has failed to be updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_product_failed">Product update failed</string>
+
+    <!-- Toast message in Editor Activitye ditor when new pet has been successfully updated [CHAR LIMIT=NONE] -->
+    <string name="editor_update_product_successful">Product update was successful</string>
+
+    <!-- Dialog message to ask the user to confirm deleting the current product [CHAR LIMIT=NONE] -->
+    <string name="delete_dialog_msg">Delete this product?</string>
+
+    <!-- Toast message in editor when current product has failed to be deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_product_failed">Error with deleting product</string>
+
+    <!-- Toast message in editor when current pet was successfully deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_product_successful">Product deleted</string>
+
+    <!-- Message alerting the user that the data is not saved, and asks if wants to quit-->
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+
+    <!-- Message to discard changes-->
+    <string name="discard">Discard</string>
+
+    <!-- Message for continue editing-->
+    <string name="keep_editing">Keep Editing</string>
 
 
 </resources>

@@ -95,10 +95,12 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
                 // Launch the {@link EditorActivity} to display teh data for the current pet.
                 startActivity(intent);
+
             }
         });
         // Kick off the loader
         getLoaderManager().initLoader(PRODUCT_LOADER, null, this);
+
     }
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
