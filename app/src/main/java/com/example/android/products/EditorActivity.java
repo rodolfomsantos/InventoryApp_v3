@@ -148,6 +148,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             String priceString = mPriceEditText.getText().toString().trim();
             int price = 0;
             String mailString = mMailEditText.getText().toString().trim();
+            String unitsSoldString = mUnitsSold.getText().toString().trim();
+            int units = 0;
+            String totalSalesString = mSales.getText().toString().trim();
+            int sales = 0;
 
 
             // Checkpoint to guarantee that there are no empty fields.
@@ -180,6 +184,22 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 price = Integer.parseInt(priceString);
             }
             values.put(ProductEntry.COLUMN_PRODUCT_PRICE, price);
+
+            // If no units are sold , don't try to parse
+            // the string into an integer value. Use 0 by default.
+
+            if (!TextUtils.isEmpty(unitsSoldString)) {
+                units = Integer.parseInt(unitsSoldString);
+            }
+            values.put(ProductEntry.COLUMN_PRODUCT_UNITS_SOLD, units);
+
+            // If no units are sold thera are no Sales, don't try to parse
+            // the string into an integer value. Use 0 by default.
+
+            if (!TextUtils.isEmpty(totalSalesString)) {
+                sales = Integer.parseInt(totalSalesString);
+            }
+            values.put(ProductEntry.COLUMN_PRODUCT_SALES, sales);
 
             // Insert a new product into the provider, returning the content UR
             // for the new product.
