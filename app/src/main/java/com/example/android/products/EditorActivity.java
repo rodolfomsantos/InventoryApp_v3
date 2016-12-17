@@ -17,21 +17,29 @@ package com.example.android.products;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,12 +47,17 @@ import android.widget.Toast;
 
 import com.example.android.products.data.ProductContract.ProductEntry;
 
+import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
 /**
  * Allows user to create a new Product or edit an existing one.
  */
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXISTING_PRODUCT_LOADER = 0;
+    private static final int FILE_SELECT_CODE = 1;
 
     /**
      * Content URI for the existing product (null if it's a new product)
@@ -82,11 +95,54 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     private TextView mUnitsSold;
 
+
     /**
      * Text View thar shows the total sales
      */
 
     private TextView mSales;
+
+    /**
+     * Add image Button
+     */
+
+    private Button addPhotoButton;
+
+    /**
+     * Add Sell Product Button
+     */
+
+    private Button sellButton;
+
+    /**
+     * Add Buy Product Button
+     */
+
+    private Button buyButton;
+
+    /**
+     * Supplier Buy Text
+     */
+
+    private TextView supplierText;
+
+    /**
+     * Buy supplier Button
+     */
+
+    private Button supplierButton;
+
+    /**
+     * Supplier Cancel Order Button
+     */
+
+    private Button supplierCancel;
+
+    /**
+     * Edit Text Supplier Quantity
+     */
+
+    private EditText mSupplierQuantity;
 
     /**
      * Validation to confirm whether the user really wants to exit without changes if
@@ -130,6 +186,117 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mQuantityText = (EditText) findViewById(R.id.product_quantity);
         mPriceEditText = (EditText) findViewById(R.id.product_price);
         mMailEditText = (EditText) findViewById(R.id.supplier_email);
+        mUnitsSold = (TextView) findViewById(R.id.total_units_sold);
+        mSales = (TextView) findViewById(R.id.total_sales);
+        addPhotoButton = (Button) findViewById(R.id.add_photo);
+        supplierText = (TextView) findViewById(R.id.buy_supplier_text);
+        supplierButton = (Button) findViewById(R.id.buy_supplier_button);
+        supplierCancel = (Button) findViewById(R.id.cancel_buy_button);
+        mSupplierQuantity = (EditText) findViewById(R.id.product_buy_quantity);
+
+
+        // Check if the fields have been changed
+        mImage.setOnTouchListener(mTouchListener);
+        mNameEditText.setOnTouchListener(mTouchListener);
+        mQuantityText.setOnTouchListener(mTouchListener);
+        mPriceEditText.setOnTouchListener(mTouchListener);
+        mMailEditText.setOnTouchListener(mTouchListener);
+        addPhotoButton.setOnTouchListener(mTouchListener);
+        mSupplierQuantity.setOnTouchListener(mTouchListener);
+
+        // Set the image view to be a click listener to insert an Image to
+        // the product
+        addPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addPhoto();
+            }
+        });
+
+
+        // Initiate the Sell Button
+
+        sellButton = (Button) findViewById(R.id.sell_button);
+        sellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // initiate the sell button method
+                sellButton();
+            }
+
+        });
+
+        // Initiate the Buy Button
+
+        buyButton = (Button) findViewById(R.id.buy_button);
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                supplierText.setVisibility(View.VISIBLE);
+                supplierButton.setVisibility(View.VISIBLE);
+                supplierCancel.setVisibility(View.VISIBLE);
+                mSupplierQuantity.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Initiate the Cancel Supplier Button
+
+        supplierCancel = (Button) findViewById(R.id.cancel_buy_button);
+        supplierCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // If the product hasn't changed, continue with handling back button press
+                if (!mProductHasChanged) {
+                    supplierText.setVisibility(View.GONE);
+                    supplierButton.setVisibility(View.GONE);
+                    supplierCancel.setVisibility(View.GONE);
+                    mSupplierQuantity.setVisibility(View.GONE);
+                }
+
+                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+                // Create a click listener to handle the user confirming that changes should
+                // be discarded.
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, close the current activity.
+                                finish();
+                            }
+                        };
+
+                // Show dialog that there are unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
+            }
+        });
+
+
+        // Initiate the Buy Supplier Button
+
+        supplierButton = (Button) findViewById(R.id.buy_supplier_button);
+        supplierButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                supplierBuyButton();
+                mail();
+                finish();
+            }
+        });
+
+    }
+
+    /**
+     * Add Photo method
+     */
+    private void addPhoto() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_photo)),
+                FILE_SELECT_CODE);
     }
 
     /**
@@ -146,12 +313,15 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             String quantityString = mQuantityText.getText().toString().trim();
             int quantity = 0;
             String priceString = mPriceEditText.getText().toString().trim();
-            int price = 0;
+            float price = 0;
             String mailString = mMailEditText.getText().toString().trim();
-            String unitsSoldString = mUnitsSold.getText().toString().trim();
-            int units = 0;
-            String totalSalesString = mSales.getText().toString().trim();
-            int sales = 0;
+            int unitsSoldString = 0;
+            float totalSalesString = 0;
+            float sales = 0;
+            Bitmap imageBitMap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            imageBitMap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            byte[] imageByteArray = outputStream.toByteArray();
 
 
             // Checkpoint to guarantee that there are no empty fields.
@@ -168,6 +338,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
             values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
             values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL, mailString);
+            values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, imageByteArray);
 
             // If the quantity is not provided by the user, don't try to parse
             // the string into an integer value. Use 0 by default.
@@ -185,21 +356,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
             values.put(ProductEntry.COLUMN_PRODUCT_PRICE, price);
 
-            // If no units are sold , don't try to parse
-            // the string into an integer value. Use 0 by default.
 
-            if (!TextUtils.isEmpty(unitsSoldString)) {
-                units = Integer.parseInt(unitsSoldString);
+            // If there is no image loaded send message
+            if (mImage.getDrawable() == null) {
+                Toast.makeText(this, "Please add a valid image", Toast.LENGTH_SHORT).show();
+                return;
             }
-            values.put(ProductEntry.COLUMN_PRODUCT_UNITS_SOLD, units);
-
-            // If no units are sold thera are no Sales, don't try to parse
-            // the string into an integer value. Use 0 by default.
-
-            if (!TextUtils.isEmpty(totalSalesString)) {
-                sales = Integer.parseInt(totalSalesString);
-            }
-            values.put(ProductEntry.COLUMN_PRODUCT_SALES, sales);
 
             // Insert a new product into the provider, returning the content UR
             // for the new product.
@@ -221,7 +383,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         } else {
 
-            // Otherwise this is an EXISTING product, so update the pet with content
+            // Otherwise this is an EXISTING product, so update the product with content
             // URI: mCurrentProductUri and pass in the new ContentValues. Pass in null
             // for the selection and selection args because mCurrentPetUri will already
             // identify the correct row in the database that we want to modify.
@@ -231,10 +393,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             String nameString = mNameEditText.getText().toString().trim();
             String quantityString = mQuantityText.getText().toString().trim();
-            int quantity = Integer.parseInt(quantityString);
             String priceString = mPriceEditText.getText().toString().trim();
-            int price = Integer.parseInt(priceString);
             String mailString = mMailEditText.getText().toString().trim();
+            String unitsSoldString = mUnitsSold.getText().toString().trim();
+            String totalSalesString = mSales.getText().toString().trim();
+            Bitmap imageBitMap = ((BitmapDrawable) mImage.getDrawable()).getBitmap();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            imageBitMap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            byte[] imageByteArray = outputStream.toByteArray();
 
             // Create a ContentValues object where column names are the keys,
             ContentValues values = new ContentValues();
@@ -242,6 +408,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, quantityString);
             values.put(ProductEntry.COLUMN_PRODUCT_PRICE, priceString);
             values.put(ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL, mailString);
+            values.put(ProductEntry.COLUMN_PRODUCT_UNITS_SOLD, unitsSoldString);
+            values.put(ProductEntry.COLUMN_PRODUCT_SALES, totalSalesString);
+            values.put(ProductEntry.COLUMN_PRODUCT_IMAGE, imageByteArray);
 
             int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
 
@@ -254,6 +423,24 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 // Otherwise, the update was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_update_product_successful),
                         Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == FILE_SELECT_CODE) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    Uri imageUri = data.getData();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    mImage.setImageBitmap(bitmap);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -338,13 +525,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // contains all columns from the products  table
         String[] projection = {
                 ProductEntry._ID,
-                //ProductEntry.COLUMN_PRODUCT_IMAGE,
+                ProductEntry.COLUMN_PRODUCT_IMAGE,
                 ProductEntry.COLUMN_PRODUCT_NAME,
                 ProductEntry.COLUMN_PRODUCT_PRICE,
                 ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL,
-                ProductEntry.COLUMN_PRODUCT_QUANTITY};
-                //ProductEntry.COLUMN_PRODUCT_UNITS_SOLD,
-                //ProductEntry.COLUMN_PRODUCT_SALES};
+                ProductEntry.COLUMN_PRODUCT_QUANTITY,
+                ProductEntry.COLUMN_PRODUCT_UNITS_SOLD,
+                ProductEntry.COLUMN_PRODUCT_SALES};
 
         // This loader will execute the ContentProvider's query method on
         // a background thread.
@@ -364,32 +551,35 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (cursor.moveToFirst()) {
 
             // Find the columns of pet attributes that we're interested in
-            //int imageColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_IMAGE);
+            int imageColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_IMAGE);
             int nameColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_NAME);
             int priceColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_PRICE);
             int emailColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL);
             int quantityColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_QUANTITY);
-            //int unitsSoldColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_UNITS_SOLD);
-            //int salesColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_SALES);
+            int unitsSoldColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_UNITS_SOLD);
+            int salesColumnIndex = cursor.getColumnIndex(ProductEntry.COLUMN_PRODUCT_SALES);
 
             // Extract out the value from the Cursor for the given column index
-            //String image = cursor.getString(imageColumnIndex);
+
             String name = cursor.getString(nameColumnIndex);
-            int price = cursor.getInt(priceColumnIndex);
+            float price = cursor.getFloat(priceColumnIndex);
             String email = cursor.getString(emailColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
-            //int unitsSold = cursor.getInt(unitsSoldColumnIndex);
-            //int sales = cursor.getInt(salesColumnIndex);
+            int unitsSold = cursor.getInt(unitsSoldColumnIndex);
+            float sales = cursor.getFloat(salesColumnIndex);
+            byte[] imageByteArray = cursor.getBlob(imageColumnIndex);
 
             // Update the views on the screen with the values from the database
-            //mImage.setImageBitmap(image);
+
             mNameEditText.setText(name);
-            mPriceEditText.setText(Integer.toString(price));
+            mPriceEditText.setText(Float.toString(price));
             mMailEditText.setText(email);
             mQuantityText.setText(Integer.toString(quantity));
-            //mUnitsSold.setText(Integer.toString(unitsSold));
-            //mSales.setText(Integer.toString(sales));
+            mUnitsSold.setText(Integer.toString(unitsSold));
+            mSales.setText(Float.toString(sales));
 
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+            mImage.setImageBitmap(bitmap);
         }
     }
 
@@ -397,19 +587,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     public void onLoaderReset(Loader<Cursor> loader) {
 
         // Update the views on the screen with the values from the database
-        //mImage
+        mImage.setImageBitmap(null);
         mNameEditText.setText("");
-        mPriceEditText.setText("");
         mPriceEditText.setText(Integer.toString(0));
         mMailEditText.setText("");
         mQuantityText.setText(Integer.toString(0));
-        //mUnitsSold.setText(Integer.toString(0));
-        //mSales.setText(Integer.toString(0));
-
+        mUnitsSold.setText(Integer.toString(0));
+        mSales.setText(Integer.toString(0));
     }
 
     /**
-     * Checkpoint to verify if the user updates part of the pet form.
+     * Checkpoint to verify if the user updates part of the products form.
      */
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -527,5 +715,96 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
         // Close the activity
         finish();
+    }
+
+    /**
+     * Sell Button method
+     */
+
+    private void sellButton() {
+
+        // Read from input fields
+        float mSellPrice = Float.parseFloat(mPriceEditText.getText().toString());
+        float mSellSales = Float.parseFloat(mSales.getText().toString());
+        int mSellUnitsSold = Integer.parseInt(mUnitsSold.getText().toString());
+        int decreaseQuantity = Integer.parseInt(mQuantityText.getText().toString());
+        if (decreaseQuantity == 0) {
+
+            // If the product quantity is 0 then there are no products to sell.
+            Toast.makeText(this, getString(R.string.no_more_products),
+                    Toast.LENGTH_SHORT).show();
+
+        } else {
+
+            decreaseQuantity--;
+            mSellUnitsSold++;
+            mSellSales = Math.round(((mSellUnitsSold * mSellPrice) * 100.00) / 100.00);
+
+            // Otherwise, the update was successful and we can display a toast.
+            Toast.makeText(this, getString(R.string.sell_confirmation),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        // Create a ContentValues object where column names are the keys,
+        ContentValues values = new ContentValues();
+
+        values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, decreaseQuantity);
+        values.put(ProductEntry.COLUMN_PRODUCT_UNITS_SOLD, mSellUnitsSold);
+        values.put(ProductEntry.COLUMN_PRODUCT_SALES, mSellSales);
+
+        int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+    }
+
+    /**
+     * Sell Button method
+     */
+
+    private void supplierBuyButton() {
+
+        // Read from input fields
+
+        int currentQuantity = Integer.parseInt(mQuantityText.getText().toString());
+        int supplierBuyQuantity = Integer.parseInt(mSupplierQuantity.getText().toString());
+        if (supplierBuyQuantity < 0) {
+
+            // If the product quantity negative then the product quantity to buy isn't valid.
+            Toast.makeText(this, getString(R.string.invalid_quantity),
+                    Toast.LENGTH_SHORT).show();
+
+        } else {
+
+            currentQuantity = currentQuantity + supplierBuyQuantity;
+
+        }
+
+        // Create a ContentValues object where column names are the keys,
+        ContentValues values = new ContentValues();
+
+        values.put(ProductEntry.COLUMN_PRODUCT_QUANTITY, currentQuantity);
+
+        int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+    }
+
+    // Create an email to the supplier
+    private void mail() {
+
+        String mailString = mMailEditText.getText().toString().trim();
+        String nameString = mNameEditText.getText().toString().trim();
+        int currentQuantity = Integer.parseInt(mSupplierQuantity.getText().toString());
+
+        //Creates an email message with the order summary
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mail to:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, mailString);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Product Order");
+        intent.putExtra(Intent.EXTRA_TEXT, "Product name: " + nameString
+                + "\n" + "Requested Product quantity: " + currentQuantity);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+
+        // Otherwise, the update was successful and we can display a toast.
+        Toast.makeText(this, getString(R.string.buy_supplier_confirmation),
+                Toast.LENGTH_SHORT).show();
     }
 }

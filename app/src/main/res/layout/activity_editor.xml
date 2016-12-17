@@ -22,12 +22,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/product_image"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorAccent" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3" />
+
+            <Button
+                android:id="@+id/add_photo"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:text="@string/select_photo" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -40,7 +55,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:inputType="textCapWords"
                 android:padding="4dp"
                 android:text="@string/product_name" />
 
@@ -59,7 +73,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:inputType="numberDecimal"
                 android:padding="4dp"
                 android:text="@string/product_price" />
 
@@ -72,7 +85,6 @@
                 android:hint="@string/hint_product_price"
                 android:inputType="numberDecimal" />
 
-
         </LinearLayout>
 
     </LinearLayout>
@@ -82,9 +94,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:text="@string/supplier_email"
-
-        />
+        android:text="@string/supplier_email" />
 
     <EditText
         android:id="@+id/supplier_email"
@@ -105,7 +115,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="@string/sell_button" />
+            android:textColor="@android:color/black"
+            android:text="@string/sell_button" />
 
         <EditText
             android:id="@+id/product_quantity"
@@ -123,7 +134,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:hint="@string/buy_button" />
+            android:textColor="@android:color/black"
+            android:text="@string/buy_button" />
 
     </LinearLayout>
 
@@ -138,7 +150,6 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-
             <TextView
                 style="@style/CategoryStyle"
                 android:layout_width="0dp"
@@ -148,12 +159,13 @@
                 android:text="@string/units_sold" />
 
             <TextView
+                android:id="@+id/total_units_sold"
                 style="@style/EditorFieldStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center_horizontal"
-                android:text="@string/hint_units_sold" />
+                android:hint="@string/hint_units_sold" />
 
             <TextView
                 style="@style/EditorFieldStyle"
@@ -163,14 +175,12 @@
                 android:gravity="center_horizontal"
                 android:text="@string/unit_units_sold" />
 
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
 
             <TextView
                 style="@style/CategoryStyle"
@@ -181,12 +191,13 @@
                 android:text="@string/total_sales" />
 
             <TextView
+                android:id="@+id/total_sales"
                 style="@style/EditorFieldStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center_horizontal"
-                android:text="@string/total_sales_value" />
+                android:hint="@string/total_sales_value" />
 
             <TextView
                 style="@style/EditorFieldStyle"
@@ -200,7 +211,52 @@
 
     </LinearLayout>
 
+    <TextView
+        style="@style/CategoryStyle"
+        android:id="@+id/buy_supplier_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:gravity="center_horizontal"
+        android:text="@string/buy_product"
+        android:visibility="gone"/>
 
+    <LinearLayout
+        android:id="@+id/buy_supplier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        >
 
+        <Button
+            android:id="@+id/buy_supplier_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/buy_confirmation"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/product_buy_quantity"
+            style="@style/EditorUnitsStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal|center_vertical"
+            android:hint="@string/input_quantity"
+            android:inputType="number"
+            android:padding="4dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/cancel_buy_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 </LinearLayout>

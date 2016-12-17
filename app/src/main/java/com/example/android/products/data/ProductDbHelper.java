@@ -42,13 +42,13 @@ public class ProductDbHelper extends SQLiteOpenHelper {
         // Create a String that contains the SQL statement to create the pets table
         String createTable = "CREATE TABLE " + ProductEntry.TABLE_NAME + " ("
                 + ProductEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + ProductEntry.COLUMN_PRODUCT_IMAGE + " TEXT, "
+                + ProductEntry.COLUMN_PRODUCT_IMAGE + " BLOB, "
                 + ProductEntry.COLUMN_PRODUCT_NAME + " TEXT NOT NULL, "
-                + ProductEntry.COLUMN_PRODUCT_PRICE + " FLOAT, "
+                + ProductEntry.COLUMN_PRODUCT_PRICE + " REAL NOT NULL DEFAULT 0.00, "
                 + ProductEntry.COLUMN_PRODUCT_SUPPLIER_EMAIL + " TEXT, "
                 + ProductEntry.COLUMN_PRODUCT_QUANTITY + " INTEGER NOT NULL DEFAULT 0, "
-                + ProductEntry.COLUMN_PRODUCT_UNITS_SOLD + " INTEGER NOT NULL, "
-                + ProductEntry.COLUMN_PRODUCT_SALES + " FLOAT);";
+                + ProductEntry.COLUMN_PRODUCT_UNITS_SOLD + " INTEGER NOT NULL DEFAULT 0, "
+                + ProductEntry.COLUMN_PRODUCT_SALES + " REAL NOT NULL DEFAULT 0.00);";
 
 
         // Execute the SQL statement

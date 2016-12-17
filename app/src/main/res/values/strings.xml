@@ -113,7 +113,7 @@
     <!-- Toast message in Editor Activity editor when new pet has failed to be updated [CHAR LIMIT=NONE] -->
     <string name="editor_update_product_failed">Product update failed</string>
 
-    <!-- Toast message in Editor Activitye ditor when new pet has been successfully updated [CHAR LIMIT=NONE] -->
+    <!-- Toast message in Editor Activity editor when new pet has been successfully updated [CHAR LIMIT=NONE] -->
     <string name="editor_update_product_successful">Product update was successful</string>
 
     <!-- Dialog message to ask the user to confirm deleting the current product [CHAR LIMIT=NONE] -->
@@ -133,6 +133,42 @@
 
     <!-- Message for continue editing-->
     <string name="keep_editing">Keep Editing</string>
+
+    <!-- Message to select a Photo-->
+    <string name="select_photo">Add Photo</string>
+
+    <!-- Sell Editor Activity-->
+    <string name="sell_product">How many Units would you like to sell?</string>
+
+    <!-- Input quantity to Sell-->
+    <string name="input_quantity">Input Quantity</string>
+
+    <!-- Sell editor Label-->
+    <string name="sell_editor_label">Sell products</string>
+
+    <!-- Sell Confirmation-->
+    <string name="sale_confirmation">Sell !</string>
+
+    <!-- Buy editor Label-->
+    <string name="buy_editor_label">Buy products</string>
+
+    <!-- Buy Editor Activity-->
+    <string name="buy_product">How many Units would you like to buy?</string>
+
+    <!-- Buy Confirmation-->
+    <string name="buy_confirmation">Buy !</string>
+
+    <!-- Sell Confirmation-->
+    <string name="sell_confirmation">Product Sold!</string>
+
+    <!-- No more products-->
+    <string name="no_more_products">No more Product to Sell!</string>
+
+    <!-- Buy SupplierConfirmation-->
+    <string name="buy_supplier_confirmation">Product Requested!</string>
+
+    <!-- Invalid supplier product quantity-->
+    <string name="invalid_quantity">Quantity must be greater than 0!</string>
 
 
 </resources>
