@@ -3,17 +3,13 @@ package com.example.android.products.data;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.widget.Button;
 
 /**
  * API Contract for the Inventory app.
  */
 
 public class ProductContract {
-
-    // To prevent someone from accidentally instantiating the contract class,
-    // give it an empty constructor.
-    private ProductContract() {
-    }
 
     /**
      * The "Content authority" is a name for the entire content provider, similar to the
@@ -22,13 +18,11 @@ public class ProductContract {
      * device.
      */
     public static final String CONTENT_AUTHORITY = "com.example.android.products";
-
     /**
      * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
      * the content provider.
      */
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
     /**
      * Possible path (appended to base content URI for possible URI's)
      * For instance, content://com.example.android.products/products/ is a valid path for
@@ -36,6 +30,11 @@ public class ProductContract {
      * as the ContentProvider hasn't been given any information on what to do with "costumer".
      */
     public static final String PATH_PRODUCTS = "products";
+
+    // To prevent someone from accidentally instantiating the contract class,
+    // give it an empty constructor.
+    private ProductContract() {
+    }
 
     /**
      * Inner class that defines constant values for the products database table.
@@ -104,7 +103,7 @@ public class ProductContract {
 
         /**
          * Product Units sold.
-
+         * <p>
          * Type: INTEGER
          */
         public final static String COLUMN_PRODUCT_UNITS_SOLD = "unitsSold";
